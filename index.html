@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/font-awesome/css/all.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/responsivo.css">
+    <link rel="icon" href="img/time.svg">
+    <title>Timer Lord</title>
+</head> 
+<body>
+    <header>
+        <button id="btn-menu" class="btn-hamburger"> <i class="fa fa-bars fa-lg"></i> </button>
+        <button id="btn-close" class="btn-hamburger"> <i class="fa fa-bars fa-lg"></i> </button>
+        <h1 class="nome-site">Timer Lord</h1>
+    </header>
+    <nav id="menu" class="menu-lg">
+        <ul>
+            <li><a href="#">Pomodoro</a></li>
+            <li><a href="#">Timer</a></li>
+            <li><a href="#">Lista de timer</a></li>
+            <li><a href="#">Cronometro</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <section id="pomodoro" class="content show">
+            <div id="pomo-title" class="row between container">
+                <h2 class="sec-title">Pomodoro</h2>
+                <button class="btn bg-primary   ">Configurar</button>
+            </div>
+            <div class="content-body">
+                <div class="row center">
+                    <button class="btn interval">Pomodoro</button>
+                    <button class="btn interval">Pausa curta</button>
+                    <button class="btn interval">Pausa longa</button>
+                </div>
+                <div id="display-pomodoro">
+                    25:00
+                </div>
+                <div class="row column">
+                    <button class="btn control bg-succes">Iniciar</button>
+                    <button class="btn control bg-danger">Parar</button>
+                    <button class="btn control">Resetar</button>
+                </div>
+            </div>
+        </section>
+        <section id="timer" class="content hide"></section>
+        <section id="timer-list" class="content hide"></section>
+        <section id="stopwatch" class="content hide"></section>
+    </div>
+
+    <div id="modals">
+        <div id="pomodoro-modal">
+            <div class="row around ai-center">
+                <div class="form-group">
+                    <label for="pomo-time">Poomodoro time</label>
+                    <input class="form-control" type="number" name="" id="">
+                </div>
+                <div class="vertical-line"></div>
+                <div class="form-group">
+                    <label for="short-pause">Short pause time</label>
+                    <input class="form-control" type="number" name="" id="">
+                </div>
+                <div class="vertical-line"></div>
+                <div class="form-group">
+                    <label for="long-pause">Long pause time</label>
+                    <input class="form-control" type="number" name="" id="">
+                </div>
+            </div>
+            <div id="pomodoro-action" class="row end">
+                <button class="btn bg-danger">Cancelar</button>
+                <button class="btn bg-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery.js"></script>
+    <script src="js/menu.js"></script>
+</body>
+</html>

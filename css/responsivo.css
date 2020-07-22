@@ -1,0 +1,27 @@
+@media screen and (max-width: 750px){
+    #pomodoro-modal {
+        width: 450px;
+    }
+    #pomodoro-modal .row{
+        flex-direction: column;
+    }
+    #pomodoro-modal .vertical-line{
+        display: none;
+    }
+    #pomodoro-modal .form-group{
+        margin-bottom: 10px;
+    }
+    #pomodoro-modal #pomodoro-action{
+        flex-direction: row;
+    }
+}
+
+
+@media screen and (max-width: 450px){
+    *{
+        font-size: 3.1vw;
+    } 
+    #pomodoro-modal{
+        width: 100%;
+    }
+} 
