@@ -25,22 +25,20 @@
     </nav>
     <div class="container">
         <section id="pomodoro" class="content show">
-            <div id="pomo-title" class="row between container">
-                <h2 class="sec-title">Pomodoro</h2>
-                <button class="btn bg-primary   ">Configurar</button>
-            </div>
+            
             <div class="content-body">
-                <div class="row center">
-                    <button class="btn interval">Pomodoro</button>
-                    <button class="btn interval">Pausa curta</button>
-                    <button class="btn interval">Pausa longa</button>
-                </div>
+                <!-- <div class="row center">
+                    <button id="setPomo"class="btn interval">Pomodoro</button>
+                    <button id="setShort" class="btn interval">Pausa curta</button>
+                    <button id="setLong" class="btn interval">Pausa longa</button>
+                </div> -->
                 <div id="display-pomodoro">
                     25:00
                 </div>
-                <div class="row column">
+                <div class="row">
+                    <button class="btn control bg-primary">Configurar</button>
                     <button class="btn control bg-succes">Iniciar</button>
-                    <button class="btn control bg-danger">Parar</button>
+                    <!-- <button class="btn control bg-danger">Parar</button> -->
                     <button class="btn control">Resetar</button>
                 </div>
             </div>
@@ -50,32 +48,32 @@
         <section id="stopwatch" class="content hide"></section>
     </div>
 
-    <div id="modals">
+    <div id="modals" class="hide">
         <div id="pomodoro-modal">
             <div class="row around ai-center">
                 <div class="form-group">
-                    <label for="pomo-time">Poomodoro time</label>
-                    <input class="form-control" type="number" name="" id="">
+                    <label for="pomo-field">Poomodoro time</label>
+                    <input class="form-control" type="text" name="" id="pomo-field">
                 </div>
                 <div class="vertical-line"></div>
                 <div class="form-group">
                     <label for="short-pause">Short pause time</label>
-                    <input class="form-control" type="number" name="" id="">
+                    <input class="form-control" type="text" name="" id="short-field">
                 </div>
                 <div class="vertical-line"></div>
                 <div class="form-group">
                     <label for="long-pause">Long pause time</label>
-                    <input class="form-control" type="number" name="" id="">
+                    <input class="form-control" type="text" name="" id="long-field">
                 </div>
             </div>
             <div id="pomodoro-action" class="row end">
-                <button class="btn bg-danger">Cancelar</button>
-                <button class="btn bg-primary">Salvar</button>
+                <button id="cancel" class="btn bg-danger">Cancelar</button>
+                <button id="pomo-save" class="btn bg-primary">Salvar</button>
             </div>
         </div>
     </div>
 
     <script src="js/jquery.js"></script>
-    <script src="js/menu.js"></script>
+    <script src="js/pomodoro.js"></script>
 </body>
 </html>

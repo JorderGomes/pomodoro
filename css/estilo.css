@@ -151,6 +151,10 @@ header{
     margin-bottom: 10px;
 }
 
+.row .control{
+    flex: 1;
+}
+
 .ai-center{
     align-items: center;
 }
@@ -192,9 +196,14 @@ header{
 
  /* modals */
 
+
+
+#modals.hide{
+    display: none;
+}
 #modals{
     background-color: #0e0a14ef;
-    height: 100vh;
+    height: 100vh; 
     width: 100vw;
     position: fixed;
     top: 0;
@@ -203,14 +212,18 @@ header{
     justify-content: center;
     align-items: center;
 
-    display: none;
+    
 }
+
 
 #pomodoro-modal{
     width: 700px;
     /* height: 100px; */
     background-color: #fff;
     padding: 10px;
+    
+    margin: auto;
+    margin-top: 100px;
 }
 
 .form-group{
