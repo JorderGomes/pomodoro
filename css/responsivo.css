@@ -1,15 +1,6 @@
 @media screen and (max-width: 750px){
-    #pomodoro-modal {
-        width: 450px;
-    }
-    #pomodoro-modal .row{
-        flex-direction: column;
-    }
-    #pomodoro-modal .vertical-line{
-        display: none;
-    }
-    #pomodoro-modal .form-group{
-        margin-bottom: 10px;
+    #pomodoro-modal .form-group .row{
+        flex-direction: row;
     }
     #pomodoro-modal #pomodoro-action{
         flex-direction: row;
@@ -18,10 +9,22 @@
 
 
 @media screen and (max-width: 450px){
-    *{
-        font-size: 3.1vw;
-    } 
+    #control-btn{
+        flex-direction: column;
+    }
+    .btn{
+        font-size: 1rem;
+    }
+    .form-group{
+        width: 100%;
+    }
     #pomodoro-modal{
         width: 100%;
     }
 } 
+
+@media screen and (max-width: 350px){
+    .form-control{
+        width: 80%;
+    }
+}

@@ -11,9 +11,13 @@
 </head> 
 <body>
     <header>
-        <button id="btn-menu" class="btn-hamburger"> <i class="fa fa-bars fa-lg"></i> </button>
-        <button id="btn-close" class="btn-hamburger"> <i class="fa fa-bars fa-lg"></i> </button>
-        <h1 class="nome-site">Timer Lord</h1>
+        <!-- <button id="btn-menu" class="btn-hamburger"> <i class="fa fa-bars fa-lg"></i> </button> -->
+        <!-- <button id="btn-close" class="btn-hamburger"> <i class="fa fa-bars fa-lg"></i> </button> -->
+        <div class="container">
+            <i class="fa fa-clock"></i>
+            <h1 class="nome-site">Pomodoro</h1>
+        </div>
+        
     </header>
     <nav id="menu" class="menu-lg">
         <ul>
@@ -25,22 +29,20 @@
     </nav>
     <div class="container">
         <section id="pomodoro" class="content show">
-            
             <div class="content-body">
-                <!-- <div class="row center">
-                    <button id="setPomo"class="btn interval">Pomodoro</button>
-                    <button id="setShort" class="btn interval">Pausa curta</button>
-                    <button id="setLong" class="btn interval">Pausa longa</button>
-                </div> -->
                 <div id="display-pomodoro">
-                    25:00
+                    
+                    <span id="display-minutes">25</span>
+                    <span>:</span>
+                    <span id="display-seconds">00</span>
+                    
                 </div>
-                <div class="row">
-                    <button class="btn control bg-primary">
+                <div id="control-btn" class="row">
+                    <button id="config" class="btn control bg-primary">
                         <i class="fa fa-cogs text-primary"></i>
                         Configurar
                     </button>
-                    <button class="btn control bg-succes">
+                    <button id="rodar" class="btn control bg-succes">
                         <i class="fa fa-play text-primary"></i>
                         Iniciar                        
                     </button>
@@ -59,22 +61,36 @@
 
     <div id="modals" class="hide">
         <div id="pomodoro-modal">
-            <div class="row around ai-center">
+            <div class="column ai-center">
                 <div class="form-group">
                     <label for="pomo-field">Poomodoro time</label>
-                    <input class="form-control" type="text" name="" id="pomo-field">
+                    <div class="row center">
+                        <select id="pomo-minutes" class="form-control"></select>
+                    </div>    
                 </div>
-                <div class="vertical-line"></div>
+
                 <div class="form-group">
                     <label for="short-pause">Short pause time</label>
-                    <input class="form-control" type="text" name="" id="short-field">
+                    <div class="row center">
+                        <select id="short-minutes" class="form-control"></select>
+                    </div>
                 </div>
-                <div class="vertical-line"></div>
+                
                 <div class="form-group">
                     <label for="long-pause">Long pause time</label>
-                    <input class="form-control" type="text" name="" id="long-field">
+                    <div class="row center">
+                        <select id="long-minutes" class="form-control"></select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="rounds">Rounds</label>
+                    <div class="row center">
+                        <input type="number" class="form-control" id="rounds">
+                    </div>
                 </div>
             </div>
+            
             <div id="pomodoro-action" class="row end">
                 <button id="cancel" class="btn bg-danger">Cancelar</button>
                 <button id="pomo-save" class="btn bg-primary">Salvar</button>
@@ -84,5 +100,6 @@
 
     <script src="js/jquery.js"></script>
     <script src="js/pomodoro.js"></script>
+    <script src="js/pomodoro2.js"></script>
 </body>
 </html>

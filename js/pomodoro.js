@@ -1,28 +1,24 @@
 var displaySelected = "pomo";
 var displayPomodoro = document.getElementById("display-pomodoro");
-var timePomo = "25:00", timeLong = "15:00", timeShort = "03:00";
-var
-    fieldPomo = document.getElementById("pomo-field"),
-    fieldShort = document.getElementById("short-field"),
-    fieldLong = document.getElementById("long-field")
-    ;
+var displayMinutes = document.getElementById("display-minutes");
+var timePomo , timeLong , timeShort , rounds;
+
+var minutes = 25; 
+var seconds = 0;
+
+var selects = document.getElementsByTagName("select");
+var pomoMinutes = document.getElementById("pomo-minutes");
+var shortMinutes = document.getElementById("short-minutes");
+var longMinutes = document.getElementById("long-minutes");
+var inputRounds = document.getElementById("rounds");
+
+iniciarTimer();
 
 function setTime(){
-    if(displaySelected === "pomo"){
-        displayPomodoro.innerHTML = timePomo;
-    }else if(displaySelected === "long"){
-        displayPomodoro.innerHTML= timeLong;
-    }else if(displaySelected === "short"){
-        displayPomodoro.innerHTML = timeShort;
-    }else{
-        console.error("erro");
-    }
+    displayMinutes.innerHTML = minutes;
 }
 
 $("#config").click(function(){
-    fieldPomo.value = timePomo;
-    fieldShort.value = timeShort;
-    fieldLong.value = timeLong;
     $("#modals").show();
 });
 
@@ -31,27 +27,91 @@ $("#cancel").click(function(){
 });
 
 $("#pomo-save").click(function(){
-    timePomo = fieldPomo.value;
-    timeLong = fieldLong.value;
-    timeShort = fieldShort.value;
+    timePomo = pomoMinutes.value;
+    timeShort = shortMinutes.value;
+    timeLong = longMinutes.value;
+    rounds = inputRounds.value;
+    
+    minutes = timePomo;
     setTime();
     $("#modals").hide();
 });
 
-$("#setPomo").click(function(){
-    displaySelected = "pomo";
-    displayPomodoro.innerHTML = timePomo;
+$("#rodar").click(function(){
+    console.log("Vou executar um pomodoro de " + timePomo + " minutos");
+    console.log("Com " + timeShort + " de pausa curta");
+    console.log("E " + timeLong + " de pausa longa");
+    console.log(rounds + " vezes");
 });
 
-$("#setShort").click(function(){
-    displaySelected = "short";
-    displayPomodoro.innerHTML = timeShort;
-});
+function setarMinutos(seletor){
+    for(let i = 1; i <= 60; i++){
+        seletor.innerHTML += `<option value=${i}> ${i} </option>`
+    }
+}
 
-$("#setLong").click(function(){
-    displaySelected = "long";
-    displayPomodoro.innerHTML = timeLong;
-});
+function iniciarTimer(){
+    for(select of selects){
+        setarMinutos(select);
+    }
+    pomoMinutes.value = pomoMinutes[24].value;
+    shortMinutes.value = shortMinutes[4].value;
+    longMinutes.value = longMinutes[9].value;
+    inputRounds.value = 4;
+
+    timePomo = pomoMinutes.value;
+    timeShort = shortMinutes.value;
+    timeLong = pomoMinutes.value;
+    rounds = inputRounds.value;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -74,4 +134,24 @@ $("#btn-close").click(function(){
     // $("#btn-menu").removeClass("btn-close");
     // $("#btn-menu").addClass("btn-menu");
     console.log("menu sumido");
+});
+
+
+
+
+
+
+$("#setPomo").click(function(){
+    displaySelected = "pomo";
+    displayPomodoro.innerHTML = timePomo;
+});
+
+$("#setShort").click(function(){
+    displaySelected = "short";
+    displayPomodoro.innerHTML = timeShort;
+});
+
+$("#setLong").click(function(){
+    displaySelected = "long";
+    displayPomodoro.innerHTML = timeLong;
 });
