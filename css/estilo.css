@@ -213,7 +213,9 @@ header .container i{
 
  /* modals */
 
-
+.hide{
+    display: none;
+}
 
 #modals.hide{
     display: none;

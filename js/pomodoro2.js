@@ -9,12 +9,19 @@ var selectPomodoro = document.getElementById("pomo-minutes");
 var selectShort = document.getElementById("short-minutes");
 var selectLong = document.getElementById("long-minutes");
 var inputRounds = document.getElementById("rounds");
-
+var btnRodar = document.getElementById("rodar");
+var btnParar = document.getElementById("parar");
 // Valores atuais
-var pomodoroStarter = 25, shortStarter = 5, longStarter = 10, qtdRoundsStarter;
-let time = pomodoroStarter * 60;
+let listTimers = [25, 5, 10];
+const qtdTimers = listTimers.length;
+let i = 0;
+var qtdRoundsStarter = 4;
+let time = listTimers[i] * 60;
 var intervaloId;
-var minutosAtuais, segundosAtuais;
+
+
+var minutosAtuais = 25;
+const segundosAtuais = "00";
 
 // Setar Valores Padrão dos inputs
 function setarMinutos(seletor){
@@ -30,13 +37,27 @@ function SetarValores(){
     selectPomodoro.value = selectPomodoro[24].value;
     selectShort.value = selectShort[4].value;
     selectLong.value = selectLong[9].value;
-    inputRounds.value = 4;
-
-    pomodoroStarter = selectPomodoro.value;
-    shortStarter = selectShort.value;
-    longStarter = selectLong.value;
-    qtdRoundsStarter = inputRounds.value;
+    inputRounds.value = qtdRoundsStarter;
 }
+
+function setTime(minutos){
+    displayMinutes.innerHTML = minutos;
+    displaySeconds.innerHTML = segundosAtuais;    
+}
+
+$("#pomo-save").click(function(){
+    listTimers[0] = selectPomodoro.value;
+    listTimers[1] = selectShort.value;
+    listTimers[2] = selectLong.value;
+    qtdRoundsStarter = inputRounds.value;
+    
+    time = listTimers[0] * 60;
+
+    minutosAtuais = listTimers[0];
+    
+    setTime(minutosAtuais);
+    $("#modals").hide();
+});
 
 SetarValores();
 
@@ -51,93 +72,74 @@ $("#config").click(function(){
 
 
 $("#rodar").click(function(){
-    console.log("Rodar");
-    
+    btnRodar.classList.add("hide");
+    btnParar.classList.remove("hide");
     intervaloId =  setInterval(updateCountDown, 1000);
 });
 
+$("#parar").click(function(){
+    btnParar.classList.add("hide");
+    btnRodar.classList.remove("hide");
+    clearInterval(intervaloId);
+    minutosAtuais = displayMinutes.innerHTML;
+});
 
 function updateCountDown(){
-    console.log("Update");
+    time--;
+    if(time < 0 ){
+        // i = (i + 1) % 2;
+        i++;
+        // tetse
+        i = i % 2;
+        time = listTimers[i] * 60;
+        // clearInterval(intervaloId);
+    }
+
+    if(i == qtdTimers ){
+        clearInterval(intervaloId);
+        return 0;
+    }
+
+    console.log("Update " + time);
+    
     const minutes = Math.floor(time / 60);
     let seconds = time % 60;
     seconds = seconds < 10 ? '0' + seconds : seconds;
     displayMinutes.innerHTML = minutes;
     displaySeconds.innerHTML = seconds;
-    time--;
+    
 
-    if(time < 0 ){
-        clearInterval(intervaloId);
-    }
+    
 }
 
 
 
 $("#resetar").click(function(){
-    minutosAtuais = pomodoroStarter;
-    setTime();
+    clearInterval(intervaloId);
+    btnParar.classList.add("hide");
+    btnRodar.classList.remove("hide");
+    setTime(listTimers[0]);
     console.log("Resetar");
 });
 
 // Botões Modal
 $("#cancel").click(function(){
     $("#modals").hide();
+    selectPomodoro.value = listTimers[0];
+    selectShort.value = listTimers[1];
+    selectLong.value = listTimers[2];
+    inputRounds.value = qtdRoundsStarter;
 });
 
-function setTime(){
-    displayMinutes.innerHTML = minutosAtuais;
-    displaySeconds.innerHTML = segundosAtuais;    
-}
 
-$("#pomo-save").click(function(){
-    pomodoroStarter = selectPomodoro.value;
-    shortStarter = selectShort.value;
-    longStarter = selectLong.value;
-    qtdRoundsStarter = inputRounds.value;
-    
-    time = pomodoroStarter * 60;
 
-    minutosAtuais = pomodoroStarter;
-    segundosAtuais = "00";
-    setTime();
-    $("#modals").hide();
-});
+
 
 // Funções para contar tempo
 
-// function pomodoro(){
-//     minutosAtuais = pomodoroStarter;
-//     segundosAtuais = 00;
-//     timer();
-// }
-
-// function short(){
-//     minutosAtuais = shortStarter;
-//     segundosAtuais = 00;
-//     timer();
-// }
 
 
 
 
 
 
-
-
-function timer(starter){
-    minutosAtuais = starter;
-    setTimeout(
-        decrementarNoModuloClock(segundosAtuais), 
-        1000
-        );
-    setTime();
-    console.log(starter);
-}
-
-// Funções auxiliares
-
-function decrementarNoModuloClock(decrementavel){
-    decrementavel--;
-    decrementavel = (decrementavel + 60) % 60;
-    return decrementavel;
-}
