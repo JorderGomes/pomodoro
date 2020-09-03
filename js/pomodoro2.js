@@ -11,7 +11,9 @@ var selectLong = document.getElementById("long-minutes");
 var inputRounds = document.getElementById("rounds");
 
 // Valores atuais
-var pomodoroStarter, shortStarter, longStarter, qtdRoundsStarter;
+var pomodoroStarter = 25, shortStarter = 5, longStarter = 10, qtdRoundsStarter;
+let time = pomodoroStarter * 60;
+var intervaloId;
 var minutosAtuais, segundosAtuais;
 
 // Setar Valores Padrão dos inputs
@@ -44,14 +46,36 @@ $("#config").click(function(){
     $("#modals").show();
 });
 
+
+
+
+
 $("#rodar").click(function(){
-    console.log("Vou executar um pomodoro de " + pomodoroStarter + " minutos");
-    console.log("Com " + shortStarter + " de pausa curta");
-    console.log("E " + longStarter + " de pausa longa");
-    console.log(qtdRoundsStarter + " vezes");
+    console.log("Rodar");
+    
+    intervaloId =  setInterval(updateCountDown, 1000);
 });
 
+
+function updateCountDown(){
+    console.log("Update");
+    const minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+    displayMinutes.innerHTML = minutes;
+    displaySeconds.innerHTML = seconds;
+    time--;
+
+    if(time < 0 ){
+        clearInterval(intervaloId);
+    }
+}
+
+
+
 $("#resetar").click(function(){
+    minutosAtuais = pomodoroStarter;
+    setTime();
     console.log("Resetar");
 });
 
@@ -61,7 +85,8 @@ $("#cancel").click(function(){
 });
 
 function setTime(){
-    displayMinutes.innerHTML = minutosAtuais;    
+    displayMinutes.innerHTML = minutosAtuais;
+    displaySeconds.innerHTML = segundosAtuais;    
 }
 
 $("#pomo-save").click(function(){
@@ -70,7 +95,49 @@ $("#pomo-save").click(function(){
     longStarter = selectLong.value;
     qtdRoundsStarter = inputRounds.value;
     
+    time = pomodoroStarter * 60;
+
     minutosAtuais = pomodoroStarter;
+    segundosAtuais = "00";
     setTime();
     $("#modals").hide();
 });
+
+// Funções para contar tempo
+
+// function pomodoro(){
+//     minutosAtuais = pomodoroStarter;
+//     segundosAtuais = 00;
+//     timer();
+// }
+
+// function short(){
+//     minutosAtuais = shortStarter;
+//     segundosAtuais = 00;
+//     timer();
+// }
+
+
+
+
+
+
+
+
+function timer(starter){
+    minutosAtuais = starter;
+    setTimeout(
+        decrementarNoModuloClock(segundosAtuais), 
+        1000
+        );
+    setTime();
+    console.log(starter);
+}
+
+// Funções auxiliares
+
+function decrementarNoModuloClock(decrementavel){
+    decrementavel--;
+    decrementavel = (decrementavel + 60) % 60;
+    return decrementavel;
+}
