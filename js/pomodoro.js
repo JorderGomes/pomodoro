@@ -145,7 +145,7 @@ $("#resetar").click(function(){
     clearInterval(intervaloId);
     btnParar.classList.add("hide");
     btnRodar.classList.remove("hide");
-    setTime(listTimers[i]);
+    setTime(listPlayTimers[i]);
     console.log("Resetar");
 });
 
