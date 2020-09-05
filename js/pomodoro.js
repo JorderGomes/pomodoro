@@ -110,13 +110,16 @@ $("#parar").click(function(){
 });
 
 function updateCountDown(){
-    
-    
     time--;
+    if(time == 0){
+        document.getElementById('sound').play();
+    }
     if(time < 0 ){
+        
         console.log("Estou em " + i);
         i++;
         time = listPlayTimers[i] * 60;
+        
         console.log("Passei para " + i);
     }
 
@@ -142,7 +145,7 @@ $("#resetar").click(function(){
     clearInterval(intervaloId);
     btnParar.classList.add("hide");
     btnRodar.classList.remove("hide");
-    setTime(listTimers[0]);
+    setTime(listTimers[i]);
     console.log("Resetar");
 });
 
