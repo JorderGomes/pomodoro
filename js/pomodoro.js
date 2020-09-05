@@ -1,157 +1,169 @@
-var displaySelected = "pomo";
+// Containers de exibição
 var displayPomodoro = document.getElementById("display-pomodoro");
 var displayMinutes = document.getElementById("display-minutes");
-var timePomo , timeLong , timeShort , rounds;
+var displaySeconds = document.getElementById("display-seconds");
 
-var minutes = 25; 
-var seconds = 0;
-
+// Inputs
 var selects = document.getElementsByTagName("select");
-var pomoMinutes = document.getElementById("pomo-minutes");
-var shortMinutes = document.getElementById("short-minutes");
-var longMinutes = document.getElementById("long-minutes");
+var selectPomodoro = document.getElementById("pomo-minutes");
+var selectShort = document.getElementById("short-minutes");
+var selectLong = document.getElementById("long-minutes");
 var inputRounds = document.getElementById("rounds");
+var btnRodar = document.getElementById("rodar");
+var btnParar = document.getElementById("parar");
 
-iniciarTimer();
 
-function setTime(){
-    displayMinutes.innerHTML = minutes;
-}
+// Valores atuais
+let listTimers = [25, 5, 10];
+let listPlayTimers = [];
+let qtdTimers = listPlayTimers.length - 1;
 
-$("#config").click(function(){
-    $("#modals").show();
-});
+let i = 0;
+var qtdRoundsStarter = 4;
+let time = listPlayTimers[i] * 60;
+var intervaloId;
 
-$("#cancel").click(function(){
-    $("#modals").hide();
-});
 
-$("#pomo-save").click(function(){
-    timePomo = pomoMinutes.value;
-    timeShort = shortMinutes.value;
-    timeLong = longMinutes.value;
-    rounds = inputRounds.value;
-    
-    minutes = timePomo;
-    setTime();
-    $("#modals").hide();
-});
+var minutosAtuais = 25;
+const segundosAtuais = "00";
 
-$("#rodar").click(function(){
-    console.log("Vou executar um pomodoro de " + timePomo + " minutos");
-    console.log("Com " + timeShort + " de pausa curta");
-    console.log("E " + timeLong + " de pausa longa");
-    console.log(rounds + " vezes");
-});
+// Chamar setup
+SetarValores();
+setListPlayTimers();
 
+
+// Setar Valores Padrão dos inputs
 function setarMinutos(seletor){
     for(let i = 1; i <= 60; i++){
         seletor.innerHTML += `<option value=${i}> ${i} </option>`
     }
 }
 
-function iniciarTimer(){
+function SetarValores(){
     for(select of selects){
         setarMinutos(select);
     }
-    pomoMinutes.value = pomoMinutes[24].value;
-    shortMinutes.value = shortMinutes[4].value;
-    longMinutes.value = longMinutes[9].value;
-    inputRounds.value = 4;
+    selectPomodoro.value = selectPomodoro[24].value;
+    selectShort.value = selectShort[4].value;
+    selectLong.value = selectLong[9].value;
+    inputRounds.value = qtdRoundsStarter;
+}
 
-    timePomo = pomoMinutes.value;
-    timeShort = shortMinutes.value;
-    timeLong = pomoMinutes.value;
-    rounds = inputRounds.value;
+function setTime(minutos){
+    displayMinutes.innerHTML = minutos;
+    displaySeconds.innerHTML = segundosAtuais;    
+    time = listPlayTimers[i] * 60;
+}
+
+function setListPlayTimers(){
+    listPlayTimers = [];
+    for(let iterator = 0; iterator < qtdRoundsStarter ; iterator++){
+        listPlayTimers.push(listTimers[0]);
+        listPlayTimers.push(listTimers[1]);
+    }
+    listPlayTimers.push(listTimers[2]);
+    qtdTimers = listPlayTimers.length;
+    console.log("Devo Executar " + qtdTimers + " vezes");
+    time = listPlayTimers[i] * 60;
+    console.log(listPlayTimers); 
+} 
+
+
+$("#pomo-save").click(function(){
+    listTimers[0] = parseInt(selectPomodoro.value);
+    listTimers[1] = parseInt(selectShort.value);
+    listTimers[2] = parseInt(selectLong.value);
+    qtdRoundsStarter = parseInt(inputRounds.value);
+    setListPlayTimers();
+    time = listPlayTimers[0] * 60;
+
+    minutosAtuais = listTimers[0];
+    
+    setTime(minutosAtuais);
+    
+    $("#modals").hide();
+});
+
+
+
+
+// Botões Controle
+$("#config").click(function(){
+    $("#modals").show();
+});
+
+
+
+
+
+$("#rodar").click(function(){
+    btnRodar.classList.add("hide");
+    btnParar.classList.remove("hide");
+    intervaloId =  setInterval(updateCountDown, 1000);
+});
+
+$("#parar").click(function(){
+    btnParar.classList.add("hide");
+    btnRodar.classList.remove("hide");
+    clearInterval(intervaloId);
+    minutosAtuais = displayMinutes.innerHTML;
+});
+
+function updateCountDown(){
+    
+    
+    time--;
+    if(time < 0 ){
+        console.log("Estou em " + i);
+        i++;
+        time = listPlayTimers[i] * 60;
+        console.log("Passei para " + i);
+    }
+
+    if(i == qtdTimers){
+        console.log("Vou parar em " + i);
+        clearInterval(intervaloId);
+        return 0;
+    }
+
+    console.log("Update " + time);
+    
+    const minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+    displayMinutes.innerHTML = minutes;
+    displaySeconds.innerHTML = seconds;
+    
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$("#btn-menu").click(function(){
-    $("#menu").fadeIn();
-    $("#menu").show();
-    
-    $("#btn-menu").hide();
-    $("#btn-close").show();
-    // $("#btn-menu").removeClass("btn-menu");
-    // $("#btn-menu").addClass("btn-close");
-    console.log("menu aparecendo");
+$("#resetar").click(function(){
+    clearInterval(intervaloId);
+    btnParar.classList.add("hide");
+    btnRodar.classList.remove("hide");
+    setTime(listTimers[0]);
+    console.log("Resetar");
 });
 
-$("#btn-close").click(function(){
-    $("#menu").fadeOut();
-    $("#menu").hide();
-    $("#btn-menu").show();
-    $("#btn-close").hide();
-    // $("#btn-menu").removeClass("btn-close");
-    // $("#btn-menu").addClass("btn-menu");
-    console.log("menu sumido");
+// Botões Modal
+$("#cancel").click(function(){
+    $("#modals").hide();
+    selectPomodoro.value = listTimers[0];
+    selectShort.value = listTimers[1];
+    selectLong.value = listTimers[2];
+    inputRounds.value = qtdRoundsStarter;
 });
 
 
 
 
 
+// Funções para contar tempo
 
-$("#setPomo").click(function(){
-    displaySelected = "pomo";
-    displayPomodoro.innerHTML = timePomo;
-});
 
-$("#setShort").click(function(){
-    displaySelected = "short";
-    displayPomodoro.innerHTML = timeShort;
-});
 
-$("#setLong").click(function(){
-    displaySelected = "long";
-    displayPomodoro.innerHTML = timeLong;
-});
+
+
+
+

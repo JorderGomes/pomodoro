@@ -15,6 +15,17 @@
     .btn{
         font-size: 1rem;
     }
+
+    .btn-group-item{
+        border-radius: 0;
+    }
+    .btn-group-item:first-child{
+        border-radius: 0.25rem 0.25rem 0 0 ;
+    }
+    .btn-group-item:last-child{
+        border-radius: 0 0 0.25rem  0.25rem ;
+    }
+
     .form-group{
         width: 100%;
     }

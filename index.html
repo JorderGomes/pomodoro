@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="stylesheet" href="css/responsivo.css">
     <link rel="icon" href="img/time.svg">
-    <title>Timer Lord</title>
+    <title>Pomodoro</title>
 </head> 
 <body>
     <header>
@@ -30,29 +30,30 @@
     <div class="container">
         <section id="pomodoro" class="content show">
             <div class="content-body">
+                
                 <div id="display-pomodoro">
-                    
-                    <span id="display-minutes">25</span>
-                    <span>:</span>
-                    <span id="display-seconds">00</span>
-                    
+                    <div class="circle">
+                        <span id="display-minutes">25</span>
+                        <span>:</span>
+                        <span id="display-seconds">00</span>
+                    </div>
                 </div>
                 <div id="control-btn" class="row">
-                    <button id="config" class="btn control bg-primary">
+                    <button id="config" class="btn btn-group-item control bg-primary">
                         <i class="fa fa-cogs text-primary"></i>
-                        Configurar
+                        <!-- Configurar -->
                     </button>
-                    <button id="rodar" class="btn control bg-succes">
+                    <button id="rodar" class="btn btn-group-item control bg-succes">
                         <i class="fa fa-play text-primary"></i>
-                        Iniciar                        
+                        <!-- Iniciar                         -->
                     </button>
-                    <button id="parar" class="btn control bg-danger hide">
+                    <button id="parar" class="btn btn-group-item control bg-danger hide">
                         <i class="fas fa-pause"></i>
                         Parar
                     </button>
-                    <button id="resetar" class="btn control">
+                    <button id="resetar" class="btn btn-group-item control">
                         <i class="fa fa-square text-primary"></i>
-                        Resetar
+                        <!-- Resetar -->
                     </button>
                 </div>
             </div>
@@ -103,6 +104,6 @@
 
     <script src="js/jquery.js"></script>
     <!-- <script src="js/pomodoro.js"></script>   -->
-    <script src="js/pomodoro2.js"></script>
+    <script src="js/pomodoro.js"></script>
 </body>
 </html>
