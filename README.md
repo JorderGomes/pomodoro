@@ -4,10 +4,6 @@
 
 Técnica de gerenciamento de tempo: 25 minutos de foco, 5 de pausa.
 
-[Objetivo](#💻-objetivo) |
-[Execução](#⚙️-execução) |
-[Tecnologias usadas](#🚀-tecnologias-usadas)
-
 </div>
 <br>
 
