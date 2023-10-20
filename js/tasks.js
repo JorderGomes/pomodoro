@@ -1,25 +1,29 @@
+// import { qtdRounds } from "./pomodoro"
+
 // variáveis
-
 const tasksUrl = "http://127.0.0.1:8000/tarefas/"
+const taskList = []
 
 
-function listarTasks(){
-    fetch(tasksUrl)
+function listarTasks() {
+    return fetch(tasksUrl)
         .then(response => {
             return response.json()
         })
         .then(tasksApi => {
-            tasksApi.map(task => {
-                montarItem(task.id, task.concluido, task.nome, task.descricao)
-            })
+            taskList.push(...tasksApi);
         })
         .catch(error => {
-            // return []
+            console.log(error);
         })
 }
 
-listarTasks()
+function renderTasks() {
+    taskList.map(task => {montarItem(task.id, task.concluido, task.nome, task.descricao)})
+}
 
+listarTasks().then(() => { renderTasks() })
+// renderTasks()
 
 // TODO: obter botão
 // const btnSalvar = document.getElementById('salvar-tarefa')
@@ -32,7 +36,7 @@ const toggle_btns = [...document.getElementsByClassName('toggle-btn')]
 
 const popup = document.getElementById('popup')
 const popup_body = document.getElementById('popup-body')
-// const add_task = document.getElementById('add-task')
+const add_task = document.getElementById('new-task')
 
 toggle_btns.map(toggle_btn => {
     toggle_btn.addEventListener('click', toggleTask)
@@ -92,7 +96,7 @@ function toggleTask(event) {
 //             console.error(error);
 //         })
 
-        
+
 //     }
 //     else {
 //         task.id = inputIdTask.value
@@ -112,11 +116,11 @@ function toggleTask(event) {
 //         .catch(error =>{
 //             console.error(error);
 //         })
-        
+
 //         const nomeCanva = document.getElementById(`tarefa-${task.id}.nome`)
 //         nomeCanva.innerHTML = ''
 //         nomeCanva.innerHTML = task.nome
-        
+
 //         const descricaoCanva = document.getElementById(`tarefa-${task.id}.descricao`)
 //         descricaoCanva.innerHTML = ''
 //         descricaoCanva.innerHTML = task.descricao
@@ -250,13 +254,13 @@ function deleteTask(event) {
     fetch(deleteTaskUrl, {
         method: 'DELETE'
     })
-    .then(response => {
-        console.log(response);
-    })
-    .catch(error =>{
-        console.error(error);
-    })
-    
+        .then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.error(error);
+        })
+
 }
 
 
@@ -264,7 +268,7 @@ function deleteTask(event) {
 
 function showEditForm(event) {
     showFormAddTask(event)
-    const idTask = event.target.id.split('.')[0] 
+    const idTask = event.target.id.split('.')[0]
     console.log(idTask);
     inputIdTask.value = idTask.split('-')[1]
     inputNome.value = document.getElementById(idTask + '.nome').innerHTML
@@ -290,6 +294,14 @@ async function toggleChecked(event) {
     try {
         const task = await obterTask(idTask)
         task.concluido = !task.concluido
+        
+        if (task.concluido == true){
+            task.qtd_rounds = parseInt(sessionStorage.getItem('qtd_rounds'));
+        } else {
+            task.qtd_rounds = 0
+        }
+        sessionStorage.setItem('qtd_rounds', '0');
+
         const editTaskUrl = tasksUrl + idTask + '/'
         fetch(editTaskUrl, {
             method: 'PUT',
@@ -298,17 +310,17 @@ async function toggleChecked(event) {
             },
             body: JSON.stringify(task)
         })
-        .then(response => response.json())
-        .then(task => {
-            console.log(task);
-        })
-        .catch(error =>{
-            console.error(error);
-        })
+            .then(response => response.json())
+            .then(task => {
+                console.log(task);
+            })
+            .catch(error => {
+                console.error(error);
+            })
 
     } catch (error) {
         console.error('Ocorreu um erro:', error);
     }
-    
-    
+
+
 }

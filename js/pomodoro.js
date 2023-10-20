@@ -20,6 +20,10 @@ let qtdTimers = listPlayTimers.length - 1;
 
 let i = 0;
 var qtdRoundsStarter = 4;
+
+sessionStorage.setItem('qtd_rounds', '0');
+
+
 let time = listPlayTimers[i] * 60;
 var intervaloId;
 
@@ -117,6 +121,11 @@ function updateCountDown(){
     if(time < 0 ){
         
         console.log("Estou em " + i);
+        if (i % 2 == 1){
+            const qtdRounds = parseInt(sessionStorage.getItem('qtd_rounds')) + 1
+            console.log(`Estou no round: ${qtdRounds}`);
+            sessionStorage.setItem('qtd_rounds', qtdRounds.toString());
+        }
         i++;
         time = listPlayTimers[i] * 60;
         
