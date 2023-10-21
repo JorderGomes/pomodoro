@@ -86,6 +86,7 @@ $("#pomo-save").click(function(){
     setTime(minutosAtuais);
     
     $("#modals").hide();
+    $("#pomodoro-modal").hide();
 });
 
 
@@ -94,6 +95,7 @@ $("#pomo-save").click(function(){
 // Botões Controle
 $("#config").click(function(){
     $("#modals").show();
+    $("#pomodoro-modal").show();
 });
 
 
@@ -161,6 +163,7 @@ $("#resetar").click(function(){
 // Botões Modal
 $("#cancel").click(function(){
     $("#modals").hide();
+    $("#pomodoro-modal").hide();
     selectPomodoro.value = listTimers[0];
     selectShort.value = listTimers[1];
     selectLong.value = listTimers[2];

@@ -56,7 +56,7 @@
     </div>
 
     <div id="modals" class="hide">
-        <div id="pomodoro-modal">
+        <div id="pomodoro-modal" class="hide">
             <div class="column ai-center">
                 <div class="form-group">
                     <label for="pomo-field">Poomodoro time</label>
@@ -92,7 +92,26 @@
                 <button id="pomo-save" class="btn bg-primary">Salvar</button>
             </div>
         </div>
+
+        <section id="popup-body" class="">
+            <h5>Nova tarefa</h5>
+            <form>
+                <input type="hidden" name="id-task" id="id-task">
+                <div class="form-group">
+                    <input type="text" class="form-control full-w" id="task-name" placeholder="Nome da tarefa" value="">
+                </div>
+                <br>
+                <textarea id="task-description" name="texto" placeholder="Descrição da tarefa" class="form-control full-w" value=""></textarea>
+                <br>
+                <div id="new-task-btns" class="form-group control-btns">
+                    <button id="cancelar-salvar" class="btn bg-secondary">Cancelar</button>
+                    <button id="salvar-tarefa" class="btn bg-primary">Salvar</button>
+                </div>
+            </form>
+        </section>
     </div>
+
+    <article id="popup" class=""> </article>
 
     <script src="js/jquery.js"></script>
     <!-- <script src="js/pomodoro.js"></script>   -->

@@ -25,9 +25,9 @@ function renderTasks() {
 listarTasks().then(() => { renderTasks() })
 // renderTasks()
 
-// TODO: obter botão
-// const btnSalvar = document.getElementById('salvar-tarefa')
-// const btnCancel = document.getElementById('cancelar-salvar')
+const btnSalvar = document.getElementById('salvar-tarefa')
+const btnCancel = document.getElementById('cancelar-salvar')
+
 const inputIdTask = document.getElementById('id-task')
 const inputNome = document.getElementById('task-name')
 const inputDesc = document.getElementById('task-description')
@@ -35,6 +35,7 @@ const inputDesc = document.getElementById('task-description')
 const toggle_btns = [...document.getElementsByClassName('toggle-btn')]
 
 const popup = document.getElementById('popup')
+const modals = document.getElementById('modals')
 const popup_body = document.getElementById('popup-body')
 const add_task = document.getElementById('new-task')
 
@@ -72,62 +73,63 @@ function toggleTask(event) {
 
 
 
-// btnSalvar.addEventListener('click', (event) => {
-//     event.preventDefault()
-//     const task = {}
+btnSalvar.addEventListener('click', (event) => {
+    event.preventDefault()
+    const task = {}
 
-//     task.nome = inputNome.value
-//     task.descricao = inputDesc.value
+    task.nome = inputNome.value
+    task.descricao = inputDesc.value
 
-//     if (inputIdTask.value === '') {
-//         task.feito = false
-//         fetch(tasksUrl, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(task)
-//         })
-//         .then(response => response.json())
-//         .then(task => {
-//             montarItem(task.id, task.feito, task.nome, task.descricao);
-//         })
-//         .catch(error =>{
-//             console.error(error);
-//         })
+    if (inputIdTask.value === '') {
+        task.feito = false
+        fetch(tasksUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        })
+        .then(response => response.json())
+        .then(task => {
+            montarItem(task.id, task.feito, task.nome, task.descricao);
+        })
+        .catch(error =>{
+            console.error(error);
+        })
 
 
-//     }
-//     else {
-//         task.id = inputIdTask.value
-//         const editTaskUrl = tasksUrl + task.id + '/'
+    }
+    else {
+        task.id = inputIdTask.value
+        const editTaskUrl = tasksUrl + task.id + '/'
 
-//         fetch(editTaskUrl, {
-//             method: 'PUT',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(task)
-//         })
-//         .then(response => response.json())
-//         .then(task => {
-//             console.log(task);
-//         })
-//         .catch(error =>{
-//             console.error(error);
-//         })
+        fetch(editTaskUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        })
+        .then(response => response.json())
+        .then(task => {
+            console.log(task);
+        })
+        .catch(error =>{
+            console.error(error);
+        })
 
-//         const nomeCanva = document.getElementById(`tarefa-${task.id}.nome`)
-//         nomeCanva.innerHTML = ''
-//         nomeCanva.innerHTML = task.nome
+        const nomeCanva = document.getElementById(`tarefa-${task.id}.nome`)
+        nomeCanva.innerHTML = ''
+        nomeCanva.innerHTML = task.nome
 
-//         const descricaoCanva = document.getElementById(`tarefa-${task.id}.descricao`)
-//         descricaoCanva.innerHTML = ''
-//         descricaoCanva.innerHTML = task.descricao
+        const descricaoCanva = document.getElementById(`tarefa-${task.id}.descricao`)
+        descricaoCanva.innerHTML = ''
+        descricaoCanva.innerHTML = task.descricao
 
-//     }
-//     hideFormAddTask()
-// })
+    }
+    hideFormAddTask()
+})
+
 
 // listar 
 
@@ -224,15 +226,15 @@ function toggleTarefa(event) {
     }
 }
 
-// add_task.addEventListener('click', showFormAddTask)
+add_task.addEventListener('click', showFormAddTask)
 
 function showFormAddTask(event) {
-    popup.style.display = 'flex'
+    modals.style.display = 'flex'
     popup_body.style.display = 'block'
 }
 
 function hideFormAddTask() {
-    popup.style.display = 'none'
+    modals.style.display = 'none'
     popup_body.style.display = 'none'
     inputNome.value = ""
     inputDesc.value = ""
@@ -242,7 +244,7 @@ function hideFormAddTask() {
 
 
 function deleteTask(event) {
-    const listTasksArticle = document.getElementById('lista-tarefas')
+    const listTasksArticle = document.getElementById('task-list')
     const cardTaskId = event.target.id.split('.')[0];
     const taskCard = document.getElementById(cardTaskId)
     listTasksArticle.removeChild(taskCard)
