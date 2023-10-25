@@ -11,9 +11,28 @@
     <title>Pomodoro</title>
 </head> 
 <body>
-
+    
     <audio id="sound" src="sound/salamisound-7788914-signal-beep-once-as.mp3"></audio>
     <div class="container">
+        <header>
+            <nav id="navigation">
+                <h1>Pomodoro</h1>
+                <div class="btn-group">
+                    <button id="config" class="btn bg-primary">
+                        <i class="fa-solid fa-gear"></i>
+                        <span class="control-btn-label">Configurar timer</span>
+                    </button>
+                    <button id="new-task" class="btn bg-secondary">
+                        <i class="fa-solid fa-plus"></i>
+                        <span class="control-btn-label">Nova tarefa</span>
+                    </button>
+                    <button id="control" class="btn bg-succes">
+                        <i class="fa-solid fa-chart-simple"></i>
+                        <span class="control-btn-label">Ver relatório</span>
+                    </button>
+                </div>
+            </nav>
+        </header>
         <section id="pomodoro" class="content">
             <div class="content-body">
                 
@@ -25,10 +44,9 @@
                     </div>
                 </div>
                 <div id="control-btn" class="row">
-                    <button id="config" class="btn btn-group-item control bg-primary">
+                    <!-- <button id="config" class="btn btn-group-item control bg-primary">
                         <i class="fa fa-cogs text-primary"></i>
-                        <!-- Configurar -->
-                    </button>
+                    </button> -->
                     <button id="rodar" class="btn btn-group-item control bg-succes">
                         <i class="fa fa-play text-primary"></i>
                         <!-- Iniciar                         -->
@@ -45,7 +63,7 @@
             </div>
         </section>
         <section class="content">
-            <button id="new-task" class="btn btn-group-item control bg-primary" >Nova tarefa</button>
+            <!-- <button id="new-task" class="btn btn-group-item control bg-primary" >Nova tarefa</button> -->
             <div id="task-list">
                 
             </div>

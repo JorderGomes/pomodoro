@@ -5,6 +5,9 @@
     #pomodoro-modal #pomodoro-action{
         flex-direction: row;
     }
+    .control-btn-label{
+        display: none;
+    }
 }
 
 
