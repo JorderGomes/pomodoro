@@ -3,7 +3,7 @@
 // variáveis
 const tasksUrl = "http://127.0.0.1:8000/tarefas/"
 const taskList = []
-
+// const qtd_tasks_by_date = []
 
 function listarTasks() {
     return fetch(tasksUrl)
@@ -19,7 +19,15 @@ function listarTasks() {
 }
 
 function renderTasks() {
-    taskList.map(task => {montarItem(task.id, task.concluido, task.nome, task.descricao)})
+    taskList.map(task => {
+        montarItem(
+            task.id, 
+            task.concluido, 
+            task.nome, 
+            task.descricao, 
+            task.data_conclusao.split('-').reverse().join('-')
+        )
+    })
 }
 
 listarTasks().then(() => { renderTasks() })
@@ -27,16 +35,20 @@ listarTasks().then(() => { renderTasks() })
 
 const btnSalvar = document.getElementById('salvar-tarefa')
 const btnCancel = document.getElementById('cancelar-salvar')
+const btnRelatorios = document.getElementById('report')
 
 const inputIdTask = document.getElementById('id-task')
 const inputNome = document.getElementById('task-name')
 const inputDesc = document.getElementById('task-description')
+const inputDate = document.getElementById('dataConclusao')
 
 const toggle_btns = [...document.getElementsByClassName('toggle-btn')]
 
 const popup = document.getElementById('popup')
 const modals = document.getElementById('modals')
-const popup_body = document.getElementById('popup-body')
+const new_task_form = document.getElementById('new-task-form')
+const report_modal = document.getElementById('report-modal')
+const close_report = document.getElementById('close-report')
 const add_task = document.getElementById('new-task')
 
 toggle_btns.map(toggle_btn => {
@@ -65,20 +77,13 @@ function toggleTask(event) {
 }
 
 // criar
-
-// btnCancel.addEventListener('click', (event) => {
-//     event.preventDefault()
-//     hideFormAddTask()
-// })
-
-
-
 btnSalvar.addEventListener('click', (event) => {
     event.preventDefault()
     const task = {}
 
     task.nome = inputNome.value
     task.descricao = inputDesc.value
+    task.data_conclusao = inputDate.value
 
     if (inputIdTask.value === '') {
         task.feito = false
@@ -91,7 +96,7 @@ btnSalvar.addEventListener('click', (event) => {
         })
         .then(response => response.json())
         .then(task => {
-            montarItem(task.id, task.feito, task.nome, task.descricao);
+            montarItem(task.id, task.feito, task.nome, task.descricao, task.data_conclusao);
         })
         .catch(error =>{
             console.error(error);
@@ -132,9 +137,7 @@ btnSalvar.addEventListener('click', (event) => {
 
 
 // listar 
-
-
-function montarItem(id, feito, nome, desc) {
+function montarItem(id, feito, nome, desc, data_conclusao) {
     // Criar botões de editar e apagar
     const btnEdit = document.createElement('button')
     btnEdit.innerHTML = 'Editar'
@@ -156,11 +159,17 @@ function montarItem(id, feito, nome, desc) {
     section.classList.add('line', 'task-section')
     section.id = `tarefa-${id}.descricao`
     section.innerHTML = desc
+    // Criar Seção
+    const sectionDate = document.createElement('div')
+    sectionDate.classList.add('line', 'task-section')
+    sectionDate.id = `tarefa-${id}.data_conclusao`
+    sectionDate.innerHTML = `Data conclusão: ${data_conclusao}`
     // Criar Body
     const body = document.createElement('div')
     body.id = `tarefa-${id}.body`
     body.classList.add('hide', 'task-body')
     body.appendChild(section)
+    body.appendChild(sectionDate)
     body.appendChild(footer)
     // Criar Toggle button icon
     const icon = document.createElement('i')
@@ -230,19 +239,18 @@ add_task.addEventListener('click', showFormAddTask)
 
 function showFormAddTask(event) {
     modals.style.display = 'flex'
-    popup_body.style.display = 'block'
+    new_task_form.style.display = 'block'
 }
 
 function hideFormAddTask() {
     modals.style.display = 'none'
-    popup_body.style.display = 'none'
+    new_task_form.style.display = 'none'
     inputNome.value = ""
     inputDesc.value = ""
+    inputDate.value = ""
 }
 
 // apagar
-
-
 function deleteTask(event) {
     const listTasksArticle = document.getElementById('task-list')
     const cardTaskId = event.target.id.split('.')[0];
@@ -265,9 +273,7 @@ function deleteTask(event) {
 
 }
 
-
 // editar
-
 function showEditForm(event) {
     showFormAddTask(event)
     const idTask = event.target.id.split('.')[0]
@@ -275,6 +281,9 @@ function showEditForm(event) {
     inputIdTask.value = idTask.split('-')[1]
     inputNome.value = document.getElementById(idTask + '.nome').innerHTML
     inputDesc.value = document.getElementById(idTask + '.descricao').innerHTML
+    data_conclusao_edit = document.getElementById(idTask + '.data_conclusao').innerHTML.split(': ')[1]
+    data_conclusao_edit = data_conclusao_edit.split('-').reverse().join('-')
+    inputDate.value = data_conclusao_edit
 }
 
 
@@ -326,3 +335,51 @@ async function toggleChecked(event) {
 
 
 }
+
+// relatório
+// 
+// eficiência de trabalho:
+// ordenar por data de conclusão
+// obter qtd_rounds de cada uma
+
+
+close_report.addEventListener('click', (event) => {
+    modals.style.display = 'none'
+    report_modal.style.display = 'none'
+})
+
+function displayChart(qtd_tasks_by_date) {
+    const dateList = qtd_tasks_by_date.map(obj => obj.data_conclusao);
+    const qtdTasksList = qtd_tasks_by_date.map(obj => obj.count);
+
+    const ctx = document.getElementById('workload').getContext('2d');
+    const workload = new Chart(ctx, {
+        type: 'bar', // Tipo de gráfico
+        data: {
+            labels: dateList,
+            datasets: [{
+                label: 'Qtd tarefas',
+                data: qtdTasksList,
+                backgroundColor: 'blue',
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Quantidade de tarefas por dia'
+            }
+        }
+    });
+    workload.update(); // Para atualizar o gráfico
+}
+
+btnRelatorios.addEventListener('click', async (event) => {
+    const qtd_tasks_by_date = await fetch(tasksUrl+'qtd_tasks_by_date')
+    .then(response => {
+        return response.json()
+    })
+    console.log(qtd_tasks_by_date);
+    modals.style.display = 'flex'
+    report_modal.style.display = 'flex'
+    displayChart(qtd_tasks_by_date)
+})

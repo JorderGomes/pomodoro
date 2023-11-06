@@ -26,7 +26,7 @@
                         <i class="fa-solid fa-plus"></i>
                         <span class="control-btn-label">Nova tarefa</span>
                     </button>
-                    <button id="control" class="btn bg-succes">
+                    <button id="report" class="btn bg-succes">
                         <i class="fa-solid fa-chart-simple"></i>
                         <span class="control-btn-label">Ver relatório</span>
                     </button>
@@ -111,28 +111,42 @@
             </div>
         </div>
 
-        <section id="popup-body" class="">
+        <section id="new-task-form" class="popup-card">
             <h5>Nova tarefa</h5>
             <form>
                 <input type="hidden" name="id-task" id="id-task">
+                <br>
                 <div class="form-group">
                     <input type="text" class="form-control full-w" id="task-name" placeholder="Nome da tarefa" value="">
                 </div>
-                <br>
                 <textarea id="task-description" name="texto" placeholder="Descrição da tarefa" class="form-control full-w" value=""></textarea>
                 <br>
+                <div class="form-group">
+                    <label for="dataConclusao">Data da Conclusão:</label>
+                    <input type="date" id="dataConclusao" class="form-control" name="dataConclusao">
+                </div>
                 <div id="new-task-btns" class="form-group control-btns">
                     <button id="cancelar-salvar" class="btn bg-secondary">Cancelar</button>
                     <button id="salvar-tarefa" class="btn bg-primary">Salvar</button>
                 </div>
             </form>
         </section>
+
+        <section id="report-modal" class="popup-card">
+            <div class="popup-head">
+                <h1>Relatórios</h1>
+                <button id="close-report" class="btn bg-secondary">X</button>
+            </div>
+            <div class="popup-body">
+                <canvas id="workload"></canvas>
+            </div>
+        </section>
     </div>
 
-    <article id="popup" class=""> </article>
+    <!-- <article id="popup" class=""> </article> -->
 
     <script src="js/jquery.js"></script>
-    <!-- <script src="js/pomodoro.js"></script>   -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/pomodoro.js"></script>
     <script src="js/tasks.js"></script>
     <script src="https://kit.fontawesome.com/d49239e0c9.js" crossorigin="anonymous"></script>
