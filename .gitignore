@@ -1,0 +1,4 @@
+/server/venv
+/server/.vscode
+/server/.mypy_cache
+/server/mypy.ini
