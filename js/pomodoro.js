@@ -12,29 +12,53 @@ var inputRounds = document.getElementById("rounds");
 var btnRodar = document.getElementById("rodar");
 var btnParar = document.getElementById("parar");
 
+const POMODORO_STORAGE_KEY = "pomodoro_timer_config";
 
-// Valores atuais
+// FLUXO REQUISITO 1: Inicialização de valores padrão ou leitura do localStorage
 let listTimers = [25, 5, 10];
-let listPlayTimers = [];
-let qtdTimers = listPlayTimers.length - 1;
-
-let i = 0;
 var qtdRoundsStarter = 4;
 
-sessionStorage.setItem('qtd_rounds', '0');
+function carregarConfiguracoesIniciais() {
+    const dadosSalvos = localStorage.getItem(POMODORO_STORAGE_KEY);
+    
+    if (dadosSalvos) {
+        console.log(dadosSalvos);
+        // Se já foi editado anteriormente, recupera os dados salvos (Requisito 3)
+        const config = JSON.parse(dadosSalvos);
+        listTimers[0] = config.pomodoro;
+        listTimers[1] = config.short;
+        listTimers[2] = config.long;
+        qtdRoundsStarter = config.rounds;
+    } else {
+        // Primeiro acesso: Define os padrões e já inicializa o armazenamento (Requisito 1)
+        const configPadrao = { pomodoro: 25, short: 5, long: 10, rounds: 4 };
+        localStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(configPadrao));
+    }
+}
 
+
+// Executa a verificação de armazenamento antes do setup da tela
+carregarConfiguracoesIniciais();
+const segundosAtuais = "00";
+// setTime(listTimers[0]);
+
+let listPlayTimers = [];
+let qtdTimers = listPlayTimers.length - 1;
+let i = 0;
+
+sessionStorage.setItem('qtd_rounds', '0');
 
 let time = listPlayTimers[i] * 60;
 var intervaloId;
 
-
-var minutosAtuais = 25;
-const segundosAtuais = "00";
+var minutosAtuais = listTimers[0];
 
 // Chamar setup
 SetarValores();
 setListPlayTimers();
 
+displayMinutes.innerHTML = minutosAtuais;
+displaySeconds.innerHTML = segundosAtuais;
 
 // Setar Valores Padrão dos inputs
 function setarMinutos(seletor){
@@ -47,9 +71,9 @@ function SetarValores(){
     for(select of selects){
         setarMinutos(select);
     }
-    selectPomodoro.value = selectPomodoro[24].value;
-    selectShort.value = selectShort[4].value;
-    selectLong.value = selectLong[9].value;
+    selectPomodoro.value = listTimers[0]; //selectPomodoro[24].value;
+    selectShort.value = listTimers[1]; //selectShort[4].value;
+    selectLong.value = listTimers[2]; //selectLong[9].value;
     inputRounds.value = qtdRoundsStarter;
 }
 
@@ -73,34 +97,38 @@ function setListPlayTimers(){
 } 
 
 
-$("#pomo-save").click(function(){
-    listTimers[0] = parseInt(selectPomodoro.value);
-    listTimers[1] = parseInt(selectShort.value);
-    listTimers[2] = parseInt(selectLong.value);
-    qtdRoundsStarter = parseInt(inputRounds.value);
-    setListPlayTimers();
-    time = listPlayTimers[0] * 60;
+// FLUXO REQUISITO 2 e 3: Salva os novos valores editados e persistidos no localStorage
+$("#pomo-save").click(function(){ //
+    listTimers[0] = parseInt(selectPomodoro.value); //
+    listTimers[1] = parseInt(selectShort.value); //
+    listTimers[2] = parseInt(selectLong.value); //
+    qtdRoundsStarter = parseInt(inputRounds.value); //
+    
+    // Grava permanentemente no navegador do usuário
+    const novaConfig = {
+        pomodoro: listTimers[0],
+        short: listTimers[1],
+        long: listTimers[2],
+        rounds: qtdRoundsStarter
+    };
+    localStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(novaConfig));
 
-    minutosAtuais = listTimers[0];
+    setListPlayTimers(); //
+    time = listPlayTimers[0] * 60; //
+
+    minutosAtuais = listTimers[0]; //
     
-    setTime(minutosAtuais);
+    setTime(minutosAtuais); //
     
-    $("#modals").hide();
-    $("#pomodoro-modal").hide();
+    $("#modals").hide(); //
+    $("#pomodoro-modal").hide(); //
 });
-
-
-
 
 // Botões Controle
 $("#config").click(function(){
     $("#modals").show();
     $("#pomodoro-modal").show();
 });
-
-
-
-
 
 $("#rodar").click(function(){
     btnRodar.classList.add("hide");
@@ -150,8 +178,6 @@ function updateCountDown(){
     
 }
 
-
-
 $("#resetar").click(function(){
     clearInterval(intervaloId);
     btnParar.classList.add("hide");
@@ -169,16 +195,4 @@ $("#cancel").click(function(){
     selectLong.value = listTimers[2];
     inputRounds.value = qtdRoundsStarter;
 });
-
-
-
-
-
-// Funções para contar tempo
-
-
-
-
-
-
-
+ 

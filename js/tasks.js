@@ -1,21 +1,26 @@
 // import { qtdRounds } from "./pomodoro"
 
-// variáveis
-const tasksUrl = "http://127.0.0.1:8000/tarefas/"
-const taskList = []
-// const qtd_tasks_by_date = []
+// variáveis - Removido endpoint externo e criado chave estável do localStorage
+const LOCAL_STORAGE_KEY = "pomodoro_tasks_data";
+const taskList = [];
 
+// Função auxiliar interna para simular o banco de dados local
+function obterTarefasDoStorage() {
+    const dados = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return dados ? JSON.parse(dados) : [];
+}
+
+function salvarTarefasNoStorage(tarefas) {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tarefas));
+}
+
+// Emulação da listagem via API (Retorna uma Promise para manter compatibilidade com o .then())
 function listarTasks() {
-    return fetch(tasksUrl)
-        .then(response => {
-            return response.json()
-        })
-        .then(tasksApi => {
-            taskList.push(...tasksApi);
-        })
-        .catch(error => {
-            console.log(error);
-        })
+    return new Promise((resolve) => {
+        const tasksLocal = obterTarefasDoStorage();
+        taskList.push(...tasksLocal);
+        resolve(tasksLocal);
+    });
 }
 
 function renderTasks() {
@@ -76,7 +81,7 @@ function toggleTask(event) {
     }
 }
 
-// criar
+// criar / atualizar localmente
 btnSalvar.addEventListener('click', (event) => {
     event.preventDefault()
     const task = {}
@@ -85,43 +90,40 @@ btnSalvar.addEventListener('click', (event) => {
     task.descricao = inputDesc.value
     task.data_conclusao = inputDate.value
 
+    const tarefasAtuais = obterTarefasDoStorage();
+
     if (inputIdTask.value === '') {
-        task.feito = false
-        fetch(tasksUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
-        })
-        .then(response => response.json())
-        .then(task => {
-            montarItem(task.id, task.feito, task.nome, task.descricao, task.data_conclusao);
-        })
-        .catch(error =>{
-            console.error(error);
-        })
+        // Criar nova tarefa
+        task.id = Date.now(); // Gera um ID numérico único baseado no timestamp atual
+        task.concluido = false;
+        task.feito = false;
+        task.qtd_rounds = 0;
 
+        tarefasAtuais.push(task);
+        salvarTarefasNoStorage(tarefasAtuais);
+        taskList.push(task); // Sincroniza array em memória
 
+        montarItem(task.id, task.feito, task.nome, task.descricao, task.data_conclusao);
     }
     else {
-        task.id = inputIdTask.value
-        const editTaskUrl = tasksUrl + task.id + '/'
+        // Editar tarefa existente
+        task.id = parseInt(inputIdTask.value);
+        
+        const indexStorage = tarefasAtuais.findIndex(t => t.id === task.id);
+        if (indexStorage !== -1) {
+            // Preserva propriedades de estado que não estão no form
+            task.concluido = tarefasAtuais[indexStorage].concluido;
+            task.feito = tarefasAtuais[indexStorage].feito || tarefasAtuais[indexStorage].concluido;
+            task.qtd_rounds = tarefasAtuais[indexStorage].qtd_rounds || 0;
+            
+            tarefasAtuais[indexStorage] = task;
+            salvarTarefasNoStorage(tarefasAtuais);
+        }
 
-        fetch(editTaskUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
-        })
-        .then(response => response.json())
-        .then(task => {
-            console.log(task);
-        })
-        .catch(error =>{
-            console.error(error);
-        })
+        const indexMemoria = taskList.findIndex(t => t.id === task.id);
+        if (indexMemoria !== -1) {
+            taskList[indexMemoria] = { ...taskList[indexMemoria], ...task };
+        }
 
         const nomeCanva = document.getElementById(`tarefa-${task.id}.nome`)
         nomeCanva.innerHTML = ''
@@ -130,11 +132,14 @@ btnSalvar.addEventListener('click', (event) => {
         const descricaoCanva = document.getElementById(`tarefa-${task.id}.descricao`)
         descricaoCanva.innerHTML = ''
         descricaoCanva.innerHTML = task.descricao
-
     }
     hideFormAddTask()
 })
 
+btnCancel.addEventListener('click', (event) => {
+    event.preventDefault()
+    hideFormAddTask()
+})
 
 // listar 
 function montarItem(id, feito, nome, desc, data_conclusao) {
@@ -214,7 +219,6 @@ function montarItem(id, feito, nome, desc, data_conclusao) {
 
 
 // toggle
-
 function toggleTarefa(event) {
     const botao_toggle = event.target
     const tarefaId = botao_toggle.id.split('.')[0]
@@ -248,29 +252,29 @@ function hideFormAddTask() {
     inputNome.value = ""
     inputDesc.value = ""
     inputDate.value = ""
+    inputIdTask.value = "" // Garante a limpeza do ID de edição oculto
 }
 
-// apagar
+// apagar localmente
 function deleteTask(event) {
     const listTasksArticle = document.getElementById('task-list')
     const cardTaskId = event.target.id.split('.')[0];
     const taskCard = document.getElementById(cardTaskId)
     listTasksArticle.removeChild(taskCard)
 
-    const idTask = cardTaskId.split('-')[1]
-    const deleteTaskUrl = tasksUrl + idTask + '/'
-    console.log(deleteTaskUrl);
+    const idTask = parseInt(cardTaskId.split('-')[1]);
+    
+    // Remove do localStorage
+    let tarefasAtuais = obterTarefasDoStorage();
+    tarefasAtuais = tarefasAtuais.filter(t => t.id !== idTask);
+    salvarTarefasNoStorage(tarefasAtuais);
 
-    fetch(deleteTaskUrl, {
-        method: 'DELETE'
-    })
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.error(error);
-        })
-
+    // Remove do array em memória
+    const indexMemoria = taskList.findIndex(t => t.id === idTask);
+    if (indexMemoria !== -1) {
+        taskList.splice(indexMemoria, 1);
+    }
+    console.log(`Tarefa ${idTask} deletada do localStorage.`);
 }
 
 // editar
@@ -281,67 +285,78 @@ function showEditForm(event) {
     inputIdTask.value = idTask.split('-')[1]
     inputNome.value = document.getElementById(idTask + '.nome').innerHTML
     inputDesc.value = document.getElementById(idTask + '.descricao').innerHTML
-    data_conclusao_edit = document.getElementById(idTask + '.data_conclusao').innerHTML.split(': ')[1]
+    let data_conclusao_edit = document.getElementById(idTask + '.data_conclusao').innerHTML.split(': ')[1]
     data_conclusao_edit = data_conclusao_edit.split('-').reverse().join('-')
     inputDate.value = data_conclusao_edit
 }
 
 
-// Marcar desmarcar
-
-async function obterTask(id) {
-    const getCurrentTaskUrl = tasksUrl + id + '/'
-    try {
-        const response = await fetch(getCurrentTaskUrl)
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Ocorreu um erro:', error);
-    }
+// Marcar desmarcar localmente
+function obterTask(id) {
+    // Retorna imediatamente o objeto correspondente simulando a chamada REST
+    const tarefas = obterTarefasDoStorage();
+    const taskFound = tarefas.find(t => t.id === parseInt(id));
+    return Promise.resolve(taskFound);
 }
 
 async function toggleChecked(event) {
     const idTask = event.target.id.split('.')[0].split('-')[1];
     try {
         const task = await obterTask(idTask)
+        if (!task) return;
+
         task.concluido = !task.concluido
+        task.feito = task.concluido; // Sincroniza a propriedade estrutural 'feito'
         
         if (task.concluido == true){
-            task.qtd_rounds = parseInt(sessionStorage.getItem('qtd_rounds'));
+            task.qtd_rounds = parseInt(sessionStorage.getItem('qtd_rounds')) || 0;
         } else {
             task.qtd_rounds = 0
         }
         sessionStorage.setItem('qtd_rounds', '0');
 
-        const editTaskUrl = tasksUrl + idTask + '/'
-        fetch(editTaskUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task)
-        })
-            .then(response => response.json())
-            .then(task => {
-                console.log(task);
-            })
-            .catch(error => {
-                console.error(error);
-            })
+        // Atualiza no localStorage
+        const tarefasAtuais = obterTarefasDoStorage();
+        const indexStorage = tarefasAtuais.findIndex(t => t.id === task.id);
+        if (indexStorage !== -1) {
+            tarefasAtuais[indexStorage] = task;
+            salvarTarefasNoStorage(tarefasAtuais);
+        }
+
+        // Atualiza no array em memória
+        const indexMemoria = taskList.findIndex(t => t.id === task.id);
+        if (indexMemoria !== -1) {
+            taskList[indexMemoria] = task;
+        }
+
+        console.log("Status atualizado no localStorage:", task);
 
     } catch (error) {
         console.error('Ocorreu um erro:', error);
     }
-
-
 }
 
 // relatório
-// 
-// eficiência de trabalho:
-// ordenar por data de conclusão
-// obter qtd_rounds de cada uma
+// emulação do endpoint de agregação 'qtd_tasks_by_date' baseado no localStorage
+function calcularQtdTasksByDate() {
+    const tarefas = obterTarefasDoStorage();
+    const contagemMapa = {};
 
+    tarefas.forEach(task => {
+        // Consideramos apenas tarefas marcadas como concluídas para o relatório de workload
+        if (task.concluido && task.data_conclusao) {
+            contagemMapa[task.data_conclusao] = (contagemMapa[task.data_conclusao] || 0) + 1;
+        }
+    });
+
+    // Mapeia o objeto agregado para o formato de array esperado pelo Chart.js original
+    return Object.keys(contagemMapa).map(data => {
+        return {
+            data_conclusao: data,
+            count: contagemMapa[data]
+        };
+    }).sort((a, b) => new Date(a.data_conclusao) - new Date(b.data_conclusao));
+}
 
 close_report.addEventListener('click', (event) => {
     modals.style.display = 'none'
@@ -349,7 +364,7 @@ close_report.addEventListener('click', (event) => {
 })
 
 function displayChart(qtd_tasks_by_date) {
-    const dateList = qtd_tasks_by_date.map(obj => obj.data_conclusao);
+    const dateList = qtd_tasks_by_date.map(obj => obj.data_conclusao.split('-').reverse().join('-')); // Formatado para exibição amigável
     const qtdTasksList = qtd_tasks_by_date.map(obj => obj.count);
 
     const ctx = document.getElementById('workload').getContext('2d');
@@ -374,10 +389,9 @@ function displayChart(qtd_tasks_by_date) {
 }
 
 btnRelatorios.addEventListener('click', async (event) => {
-    const qtd_tasks_by_date = await fetch(tasksUrl+'qtd_tasks_by_date')
-    .then(response => {
-        return response.json()
-    })
+    // Simula a requisição fetch resolvendo a agregação local instantaneamente
+    const qtd_tasks_by_date = calcularQtdTasksByDate();
+    
     console.log(qtd_tasks_by_date);
     modals.style.display = 'flex'
     report_modal.style.display = 'flex'
