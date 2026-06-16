@@ -53,6 +53,21 @@ var intervaloId;
 
 var minutosAtuais = listTimers[0];
 
+function gerenciarPermissaoNotificacao() {
+    if (!("Notification" in window)) {
+        console.log("Este navegador não suporta notificações de desktop.");
+        return;
+    }
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission().then(function (permission) {
+            if (permission === "granted") {
+                console.log("Permissão para notificações concedida!");
+            }
+        });
+    }
+}
+gerenciarPermissaoNotificacao();
+
 // Chamar setup
 SetarValores();
 setListPlayTimers();
@@ -126,6 +141,7 @@ $("#pomo-save").click(function(){ //
 
 // Botões Controle
 $("#config").click(function(){
+    gerenciarPermissaoNotificacao();
     $("#modals").show();
     $("#pomodoro-modal").show();
 });
@@ -143,13 +159,41 @@ $("#parar").click(function(){
     minutosAtuais = displayMinutes.innerHTML;
 });
 
+function showNotification(i) {
+    if (Notification.permission === "granted") {
+        let tituloNotificacao = "";
+        let corpoNotificacao = "";
+
+        // Mapeia o próximo bloco baseado nas regras da estrutura listPlayTimers
+        if (i === (qtdTimers - 1)) {
+            // Último item da lista é sempre a Pausa Longa
+            tituloNotificacao = "🔔 Hora do Descanso Longo!";
+            corpoNotificacao = `Aproveite para relaxar por ${listPlayTimers[i]} minutos antes da próxima jornada.`;
+        } else if (i % 2 === 1) {
+            // Índices ímpares correspondem a Pausas Curtas
+            tituloNotificacao = "☕ Pausa Curta Iniciada!";
+            corpoNotificacao = `Dê uma pausa de ${listPlayTimers[i]} minutos para esticar as pernas.`;
+        } else {
+            // Índices pares correspondem ao Pomodoro (Foco)
+            tituloNotificacao = "🎯 Hora de Focar!";
+            corpoNotificacao = `Ciclo de foco iniciado. Concentre-se totalmente pelos próximos ${listPlayTimers[i]} minutos.`;
+        }
+
+        // Cria e dispara o alerta visual na área de trabalho
+        new Notification(tituloNotificacao, {
+            body: corpoNotificacao,
+            icon: "img/time.svg" // Usa o ícone do projeto na notificação
+        });
+    }
+}
+
 function updateCountDown(){
     time--;
     if(time == 0){
         document.getElementById('sound').play();
     }
+
     if(time < 0 ){
-        
         console.log("Estou em " + i);
         if (i % 2 == 1){
             const qtdRounds = parseInt(sessionStorage.getItem('qtd_rounds')) + 1
@@ -157,14 +201,22 @@ function updateCountDown(){
             sessionStorage.setItem('qtd_rounds', qtdRounds.toString());
         }
         i++;
-        time = listPlayTimers[i] * 60;
-        
-        console.log("Passei para " + i);
+        if (i < qtdTimers) {
+            time = listPlayTimers[i] * 60;
+            console.log("Passei para " + i);
+            showNotification(i);
+        }
     }
 
     if(i == qtdTimers){
         console.log("Vou parar em " + i);
         clearInterval(intervaloId);
+        if (Notification.permission === "granted") {
+            new Notification("🎉 Sessão Finalizada!", {
+                body: "Todos os rounds do Pomodoro foram concluídos com sucesso!",
+                icon: "img/time.svg"
+            });
+        }
         return 0;
     }
 
